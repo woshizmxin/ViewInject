@@ -51,37 +51,58 @@ public class AnnotatedClass {
                 .addAnnotation(Override.class)
                 .addParameter(TypeName.get(mTypeElement.asType()), "host", Modifier.FINAL)
                 .addParameter(TypeName.OBJECT, "source")
-                .addParameter(TypeUtil.PROVIDER,"provider");
+                .addParameter(TypeUtil.PROVIDER, "provider");
 
-        for(BindViewField field : mFields){
+        for (BindViewField field : mFields) {
             // find views
             injectMethod.addStatement("host.$N = ($T)(provider.findView(source, $L))",
                     field.getFieldName(),
-                    ClassName.get(field.getFieldType()), field.getResId());
-        }
+                    ClassName.get(field.getFieldType()), field.getBranchId());
 
-        for(OnClickMethod method :mMethods){
             TypeSpec listener = TypeSpec.anonymousClassBuilder("")
-                    .addSuperinterface(TypeUtil.ANDROID_ON_CLICK_LISTENER)
-                    .addMethod(MethodSpec.methodBuilder("onClick")
+                    .addSuperinterface(TypeUtil.ANDROID_TEXT_WATCHER)
+                    .addMethod(MethodSpec.methodBuilder("afterTextChanged")
                             .addAnnotation(Override.class)
                             .addModifiers(Modifier.PUBLIC)
                             .returns(TypeName.VOID)
-                            .addParameter(TypeUtil.ANDROID_VIEW, "view")
-                            .addStatement("host.$N()", method.getMethodName())
+                            .addParameter(TypeUtil.ANDROID_EDIT, "editable")
+                            .addStatement("(($T)host.$N).setVisibility($T.GONE);",
+                                    field.getFieldType(), field.getFieldName(),
+                                    field.getFieldType())
+                            .build())
+                    .addMethod(MethodSpec.methodBuilder("beforeTextChanged")
+                            .addAnnotation(Override.class)
+                            .addModifiers(Modifier.PUBLIC)
+                            .returns(TypeName.VOID)
+                            .addParameter(TypeUtil.ANDROID_CHAR, "charSequence")
+                            .addParameter(TypeName.INT, "i")
+                            .addParameter(TypeName.INT, "i1")
+                            .addParameter(TypeName.INT, "i2")
+                            .build())
+                    .addMethod(MethodSpec.methodBuilder("onTextChanged")
+                            .addAnnotation(Override.class)
+                            .addModifiers(Modifier.PUBLIC)
+                            .returns(TypeName.VOID)
+                            .addParameter(TypeUtil.ANDROID_CHAR, "charSequence")
+                            .addParameter(TypeName.INT, "i")
+                            .addParameter(TypeName.INT, "i1")
+                            .addParameter(TypeName.INT, "i2")
                             .build())
                     .build();
-            injectMethod.addStatement("View.OnClickListener listener = $L ", listener);
-            for (int id : method.getResIds()) {
-                // set listeners
-                injectMethod.addStatement("provider.findView(source, $L).setOnClickListener(listener)", id);
-            }
+            injectMethod.addStatement("TextWatcher textWatcher = $L ", listener);
+            System.out.print("*********************");
+            System.out.print(field.getFieldType());
+            System.out.print("*********************");
+            injectMethod.addStatement(
+                    "(($T)(provider.findView(source, $L))).addTextChangedListener(textWatcher)",
+                    field.getFieldType(), field.getMasterId());
         }
 
         //generaClass
         TypeSpec injectClass = TypeSpec.classBuilder(mTypeElement.getSimpleName() + "$$ViewInject")
                 .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(ParameterizedTypeName.get(TypeUtil.INJET, TypeName.get(mTypeElement.asType())))
+                .addSuperinterface(ParameterizedTypeName.get(TypeUtil.INJET,
+                        TypeName.get(mTypeElement.asType())))
                 .addMethod(injectMethod.build())
                 .build();
 

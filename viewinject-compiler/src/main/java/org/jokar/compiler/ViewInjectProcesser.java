@@ -53,7 +53,7 @@ public class ViewInjectProcesser extends AbstractProcessor {
 
         try {
             processBindView(roundEnv);
-            processOnClick(roundEnv);
+//            processOnClick(roundEnv);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
             error(e.getMessage());
@@ -114,7 +114,7 @@ public class ViewInjectProcesser extends AbstractProcessor {
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> types = new LinkedHashSet<>();
         types.add(BindView.class.getCanonicalName());
-        types.add(OnClick.class.getCanonicalName());
+//        types.add(OnClick.class.getCanonicalName());
         return types;
     }
 
