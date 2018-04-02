@@ -10,21 +10,27 @@
     <TextView
         android:id="@+id/textView"
         android:layout_width="100dp"
-        android:layout_height="200dp"
+        android:layout_height="50dp"
         android:text="TextView" />
 
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="100dp"
-        android:layout_height="200dp"
-        android:text="TextView2" />
+    <!--<TextView-->
+    <!--android:id="@+id/textView2"-->
+    <!--android:layout_width="100dp"-->
+    <!--android:layout_height="200dp"-->
+    <!--android:text="TextView2" />-->
 
-    <!--<ImageView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:id="@+id/img"-->
-    <!--android:src="@mipmap/ic_launcher"/>-->
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher" />
+
+    <ImageView
+        android:id="@+id/img2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher" />
 
     <Button
         android:id="@+id/button"
