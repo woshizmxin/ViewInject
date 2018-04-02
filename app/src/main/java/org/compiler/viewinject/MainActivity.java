@@ -2,9 +2,6 @@ package org.compiler.viewinject;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView({R.id.textView2, R.id.textView})
     TextView mTextView2;
 
+
     Button mButton;
     boolean isEmpty;
     TextView textView;
@@ -36,35 +34,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (isEmpty) {
-                    textView.setText("hi,我不是空的");
+                    textView.setText("TextView");
                 } else {
                     textView.setText("");
                 }
                 isEmpty = !isEmpty;
             }
         });
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (TextUtils.isEmpty(editable.toString())) {
-                    mTextView2.setVisibility(View.GONE);
-                } else {
-                    mTextView2.setVisibility(View.VISIBLE);
-                }
-
-            }
-        };
-        textView.addTextChangedListener(textWatcher);
     }
 
     public void ccc() {

@@ -50,8 +50,8 @@ public class AnnotatedClass {
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .addParameter(TypeName.get(mTypeElement.asType()), "host", Modifier.FINAL)
-                .addParameter(TypeName.OBJECT, "source")
-                .addParameter(TypeUtil.PROVIDER, "provider");
+                .addParameter(TypeName.OBJECT, "source", Modifier.FINAL)
+                .addParameter(TypeUtil.PROVIDER, "provider", Modifier.FINAL);
 
         for (BindViewField field : mFields) {
             // find views
@@ -66,8 +66,23 @@ public class AnnotatedClass {
                             .addModifiers(Modifier.PUBLIC)
                             .returns(TypeName.VOID)
                             .addParameter(TypeUtil.ANDROID_EDIT, "editable")
-                            .addStatement("(($T)host.$N).setVisibility($T.GONE);",
+                            .addStatement("           if (editable != null && editable.length() >"
+                                            + " 0) {\n"
+                                            + "                    (($T)host.$N).setVisibility($T"
+                                            + ".VISIBLE);\n" +
+                                            "(($T)provider.findView(source,  $L)).setVisibility"
+                                            + "($T.VISIBLE);"
+                                            + "                } else {\n"
+                                            + "                    (($T)host.$N).setVisibility($T"
+                                            + ".GONE)"
+                                            + ";\n" +
+                                            "(($T)provider.findView(source,  $L)).setVisibility"
+                                            + "($T.GONE);"
+                                            + "                }", field.getFieldType(),
+                                    field.getFieldName(), field.getFieldType(),
+                                    field.getFieldType(), field.getMasterId(), field.getFieldType(),
                                     field.getFieldType(), field.getFieldName(),
+                                    field.getFieldType(), field.getFieldType(), field.getMasterId(),
                                     field.getFieldType())
                             .build())
                     .addMethod(MethodSpec.methodBuilder("beforeTextChanged")
